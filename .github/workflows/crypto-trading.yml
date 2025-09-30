@@ -1,0 +1,46 @@
+name: Ultra AI Crypto Trading System
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Her 10 dakikada bir
+  workflow_dispatch:  # Manuel çalıştırma
+  push:
+    branches: [ main ]
+
+jobs:
+  crypto-trading:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install ccxt pandas numpy requests asyncio aiohttp
+        pip install scikit-learn xgboost lightgbm
+        
+    - name: Run Ultra Cloud AI
+      env:
+        BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
+        BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
+        BITGET_API_KEY: ${{ secrets.BITGET_API_KEY }}
+        BITGET_SECRET_KEY: ${{ secrets.BITGET_SECRET_KEY }}
+        BITGET_PASSPHRASE: ${{ secrets.BITGET_PASSPHRASE }}
+      run: |
+        python ultra_cloud_ai.py
+        
+    - name: Upload Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: trading-results-${{ github.run_number }}
+        path: |
+          *.log
+          *.json
+        retention-days: 30
