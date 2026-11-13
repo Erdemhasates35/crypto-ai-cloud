@@ -1,46 +1,21 @@
-name: Ultra AI Crypto Trading System
+name: Crypto AI Trading — execution disabled pending independent Guard
+
 on:
-  schedule:
-    - cron: '*/10 * * * *'  # Her 10 dakikada bir
-  workflow_dispatch:  # Manuel çalıştırma
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  crypto-trading:
+  execution-disabled:
+    name: Live execution disabled — Guard integration required
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        
-    - name: Install Dependencies
-      run: |
-        pip install --upgrade pip
-        pip install ccxt pandas numpy requests asyncio aiohttp
-        pip install scikit-learn xgboost lightgbm
-        
-    - name: Run Ultra Cloud AI
-      env:
-        BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
-        BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
-        BITGET_API_KEY: ${{ secrets.BITGET_API_KEY }}
-        BITGET_SECRET_KEY: ${{ secrets.BITGET_SECRET_KEY }}
-        BITGET_PASSPHRASE: ${{ secrets.BITGET_PASSPHRASE }}
-      run: |
-        python ultra_cloud_ai.py
-        
-    - name: Upload Results
-      uses: actions/upload-artifact@v3
-      with:
-        name: trading-results-${{ github.run_number }}
-        path: |
-          *.log
-          *.json
-        retention-days: 30
+      - name: Explain execution boundary
+        shell: bash
+        run: |
+          echo "::notice::This workflow intentionally does not start the trading script."
+          echo "::notice::The current script can submit Binance Futures market orders with sandbox=false."
+          echo "::notice::No independent OMNIQUANT Guard approval, calibrated probability, loss controls, or venue reconciliation is connected."
+          echo "::notice::Scheduled and push-triggered execution remains disabled until those controls are implemented and tested."
+          echo "No exchange credentials were loaded. No market data request or order was sent."
